@@ -1,0 +1,3 @@
+192.168.0.33 // ip address
+1024 // max msg size
+5 // max queue size
