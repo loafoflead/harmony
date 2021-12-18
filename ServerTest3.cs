@@ -46,6 +46,9 @@ public class ServerTest3 {
     private bool online = true;
     private bool listenForNewClients = true;
 
+    private int deleteListAfter = 1000;
+    private bool saveLogToTextFileWhenCleared = false;
+
     private List<client> clientList;
     private List<Msg> internalMessagesList;
     private Socket listener;
@@ -76,6 +79,8 @@ public class ServerTest3 {
 			ipAddressStr = lines[0].Split(' ',2)[0];
             maxMsgSizeInBytes = int.Parse(lines[1].Split(' ',2)[0]);
             maxClientQueue = int.Parse(lines[2].Split(' ',2)[0]);
+            deleteListAfter = int.Parse(lines[3].Split(' ',2)[0]);
+            saveLogToTextFileWhenCleared = bool.Parse(lines[3].Split(' ', 2)[0].ToLower());
 		} catch {
 			Console.WriteLine("Missing config.txt file or it is in the incorrect format, create file or ignore for defaults. Ingore? [Y/N]");
 		}
@@ -292,6 +297,23 @@ public class ServerTest3 {
                     case "close":
                     case "quit":
                         online = false;
+                        if (saveLogToTextFileWhenCleared == true) {
+                            List<string> messages = new List<string>();
+                            foreach(Msg ms in internalMessagesList) {
+                                messages.Add("<"+ms.sender.username+">: " + ms.content + "\n");
+                            }
+                            string logFileName = "chatlogfile";
+                            bool freeName = false;
+                            int index = 0;
+                            while (!freeName) {
+                                if (System.IO.File.Exists(logFileName + index.ToString())) {
+                                    index ++;
+                                } else {
+                                    freeName = true;
+                                }
+                            }
+                            System.IO.File.WriteAllLines(logFileName + index.ToString() + ".txt", messages);
+                        }
                         quit();
                         return;
 
@@ -378,6 +400,23 @@ public class ServerTest3 {
                         break;
 
                     case "clr":
+                        if (saveLogToTextFileWhenCleared == true) {
+                            List<string> messages = new List<string>();
+                            foreach(Msg ms in internalMessagesList) {
+                                messages.Add("<"+ms.sender.username+">: " + ms.content + "\n");
+                            }
+                            string logFileName = "chatlogfile";
+                            bool freeName = false;
+                            int index = 0;
+                            while (!freeName) {
+                                if (System.IO.File.Exists(logFileName + index.ToString())) {
+                                    index ++;
+                                } else {
+                                    freeName = true;
+                                }
+                            }
+                            System.IO.File.WriteAllLines(logFileName + index.ToString() + ".txt", messages);
+                        }
                         internalMessagesList = new List<Msg>();
                         messagesForSendingThreadToSend = new List<Msg>();
                         Console.WriteLine("Cleared recent and internal messages list.");
