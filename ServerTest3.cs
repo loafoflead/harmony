@@ -61,6 +61,14 @@ public class ServerTest3 {
     private int maxMsgSizeInBytes = 1024;
     private int maxClientQueue = 10;
 
+    private string[] commands = new string[] {
+        "msgs: lists all messages.", "rmsgs: lists all recent messages.",
+        "format <rainbow/highlight> <text>: sends a message in the desired format.", "> <text>: outputs a message to connected clients.",
+        "clients: lists all ongoing connections.", "kick <client name/uuid>: removes the specified client from the server.", 
+        "msgc: outputs the number of messages in the log.", "clr: clears the message log.", "cls: clears the console window.",
+        "close: shuts down the server.", "help: bring up this page."
+    };
+
     public ServerTest3() {
 
         try {
@@ -365,6 +373,16 @@ public class ServerTest3 {
                         }
                         break;
 
+                    case "cls":
+                        Console.Clear();
+                        break;
+
+                    case "clr":
+                        internalMessagesList = new List<Msg>();
+                        messagesForSendingThreadToSend = new List<Msg>();
+                        Console.WriteLine("Cleared recent and internal messages list.");
+                        break;
+
                     case "format":
                         if (input.Split(" ").Length < 3) {
                             Console.WriteLine("Incorrect number of arguments.");
@@ -416,8 +434,15 @@ public class ServerTest3 {
                         }
                         break;
 
+                    case "help":
+                    case "?":
+                        foreach(string comand in commands) {
+                            Console.WriteLine("\\> " + comand);
+                        }
+                        break;
+
                     default:
-                        Console.WriteLine("Unknown command.");
+                        Console.WriteLine("Unknown command, type 'help' or '?' for a list of available commands.");
                         break;
                 }
             }
