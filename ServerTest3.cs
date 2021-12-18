@@ -80,9 +80,10 @@ public class ServerTest3 {
             maxMsgSizeInBytes = int.Parse(lines[1].Split(' ',2)[0]);
             maxClientQueue = int.Parse(lines[2].Split(' ',2)[0]);
             deleteListAfter = int.Parse(lines[3].Split(' ',2)[0]);
-            saveLogToTextFileWhenCleared = bool.Parse(lines[3].Split(' ', 2)[0].ToLower());
-		} catch {
+            saveLogToTextFileWhenCleared = bool.Parse(lines[4].Split(' ', 2)[0].ToLower());
+		} catch (Exception e) {
 			Console.WriteLine("Missing config.txt file or it is in the incorrect format, create file or ignore for defaults. Ingore? [Y/N]");
+            Console.WriteLine("nerd stuff: " + e.Message);
 		}
 
         IPAddress ipAddress;
